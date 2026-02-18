@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ramzan 2026 - Karachi Official</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Poppins:wght@300;400;600&display=swap');
+
+        :root {
+            --gold: #D4AF37;
+            --emerald: #064E3B;
+            --night: #020617;
+            --white: #ffffff;
+        }
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100%;
+            background: var(--night);
+            color: var(--white);
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            position: relative;
+            z-index: 10;
+            padding: 20px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .card {
+            text-align: center;
+            background: rgba(2, 6, 23, 0.95);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 2px solid var(--gold);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.15);
+            width: 95%;
+            max-width: 1000px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-family: 'Amiri', serif;
+            font-size: clamp(2.2rem, 8vw, 4.5rem);
+            color: var(--gold);
+            margin: 0;
+        }
+
+        .location {
+            font-size: clamp(0.7rem, 2vw, 1rem);
+            letter-spacing: 4px;
+            color: #aaa;
+            text-transform: uppercase;
+        }
+
+        .countdown {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .box {
+            background: rgba(212, 175, 55, 0.1);
+            padding: 1.2rem 0.8rem;
+            border-radius: 15px;
+            flex: 1;
+            min-width: 75px;
+            max-width: 110px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .num {
+            display: block;
+            font-size: clamp(1.4rem, 4vw, 2.2rem);
+            font-weight: 600;
+        }
+
+        .label {
+            font-size: 0.65rem;
+            color: var(--gold);
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        #calendar-section {
+            display: none;
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            color: black !important;
+            padding: clamp(1rem, 5vw, 2.5rem);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            margin-top: 20px;
+            box-sizing: border-box;
+        }
+
+        #calendar-section h2 {
+            color: var(--emerald);
+            font-family: 'Amiri', serif;
+            font-size: clamp(1.6rem, 5vw, 2.8rem);
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 15px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            -webkit-overflow-scrolling: touch;
+            /* Smooth scroll on iOS */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 450px;
+        }
+
+        th,
+        td {
+            padding: 12px 8px;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: clamp(0.8rem, 1.5vw, 1rem);
+        }
+
+        th {
+            background: var(--emerald);
+            color: white !important;
+            text-transform: uppercase;
+        }
+
+        .highlight {
+            font-weight: 700;
+            color: #000;
+        }
+
+        .footer-credit {
+            margin-top: 25px;
+            text-align: center;
+            color: var(--gold);
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            padding-top: 15px;
+        }
+
+        .footer-credit b {
+            font-size: 1.1rem;
+            display: block;
+            margin: 3px 0;
+        }
+
+        .btn {
+            background: var(--emerald);
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            padding: 12px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: 0.3s;
+            margin: 8px;
+        }
+
+        .btn:hover {
+            background: var(--gold);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 480px) {
+            .wrapper {
+                padding: 10px;
+            }
+
+            .card {
+                padding: 1.5rem 1rem;
+            }
+
+            .box {
+                min-width: 60px;
+                padding: 0.8rem 0.4rem;
+            }
+
+            .btn {
+                width: 90%;
+                padding: 15px;
+            }
+        }
+
+        .pdf-header {
+            display: none;
+            text-align: center;
+            border-bottom: 2px solid var(--gold);
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="fireworksCanvas"></canvas>
+    <audio id="duaAudio" src="Video.Guru_20260102_152237875.mp3" preload="auto"></audio>
+
+    <div class="wrapper">
+        <div id="countdown-ui" class="card">
+            <div class="location">Karachi, Pakistan</div>
+            <h1>Ramzan 2026</h1>
+            <div class="countdown">
+                <div class="box"><span class="num" id="d">00</span><span class="label">Days</span></div>
+                <div class="box"><span class="num" id="h">00</span><span class="label">Hours</span></div>
+                <div class="box"><span class="num" id="m">00</span><span class="label">Mins</span></div>
+                <div class="box"><span class="num" id="s">00</span><span class="label">Secs</span></div>
+            </div>
+            <button class="btn" onclick="showCalendar()">Open Karachi Timetable</button>
+
+            <div class="footer-credit">
+                <span>Made by</span>
+                <b>Syed Muhammad Hassan Ali</b>
+                <span>Owner Islamic Studio YouTube Channel</span>
+            </div>
+        </div>
+
+        <div id="calendar-buttons" style="display: none; z-index: 100; margin-bottom: 15px; text-align: center;">
+            <button class="btn" onclick="downloadPDF()">📥 Download PDF Calendar</button>
+        </div>
+
+        <div id="calendar-section">
+            <div class="pdf-header" id="pdf-header">
+                <h1 style="color: #064E3B; margin:0;">Ramzan Calendar 2026</h1>
+                <p style="color: #000; margin:0; font-weight:bold;">Karachi, Pakistan (Official)</p>
+            </div>
+
+            <h2>Karachi Ramzan Calendar 1447/2026</h2>
+            <p style="text-align: center; color: #555; margin: 0; font-size: 0.9rem;">Fiqa Hanafi | Official Data
+                Source: Hamariweb</p>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Roza</th>
+                            <th>Date</th>
+                            <th>Sehar</th>
+                            <th>Iftar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="calendar-body"></tbody>
+                </table>
+            </div>
+
+            <div
+                style="text-align: center; margin-top: 20px; color: #333; border-top: 1px solid #ddd; padding-top: 15px;">
+                <p style="margin: 0; font-size: 0.9rem;">Designed by: <b>Syed Muhammad Hassan Ali</b></p>
+                <p style="margin: 0; font-size: 0.8rem;">Owner: Islamic Studio</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const officialData = [
+            ["1", "19 Feb", "05:46 AM", "6:29 PM"], ["2", "20 Feb", "05:45 AM", "6:30 PM"],
+            ["3", "21 Feb", "05:44 AM", "6:31 PM"], ["4", "22 Feb", "05:44 AM", "6:31 PM"],
+            ["5", "23 Feb", "05:43 AM", "6:32 PM"], ["6", "24 Feb", "05:42 AM", "6:32 PM"],
+            ["7", "25 Feb", "05:41 AM", "6:33 PM"], ["8", "26 Feb", "05:40 AM", "6:33 PM"],
+            ["9", "27 Feb", "05:40 AM", "6:34 PM"], ["10", "28 Feb", "05:39 AM", "6:34 PM"],
+            ["11", "01 Mar", "05:38 AM", "6:35 PM"], ["12", "02 Mar", "05:37 AM", "6:35 PM"],
+            ["13", "03 Mar", "05:36 AM", "6:36 PM"], ["14", "04 Mar", "05:35 AM", "6:36 PM"],
+            ["15", "05 Mar", "05:34 AM", "6:37 PM"], ["16", "06 Mar", "05:33 AM", "6:37 PM"],
+            ["17", "07 Mar", "05:32 AM", "6:38 PM"], ["18", "08 Mar", "05:31 AM", "6:38 PM"],
+            ["19", "09 Mar", "05:30 AM", "6:39 PM"], ["20", "10 Mar", "05:30 AM", "6:39 PM"],
+            ["21", "11 Mar", "05:29 AM", "6:40 PM"], ["22", "12 Mar", "05:28 AM", "6:40 PM"],
+            ["23", "13 Mar", "05:27 AM", "6:41 PM"], ["24", "14 Mar", "05:25 AM", "6:41 PM"],
+            ["25", "15 Mar", "05:24 AM", "6:42 PM"], ["26", "16 Mar", "05:23 AM", "6:42 PM"],
+            ["27", "17 Mar", "05:22 AM", "6:43 PM"], ["28", "18 Mar", "05:21 AM", "6:43 PM"],
+            ["29", "19 Mar", "05:20 AM", "6:43 PM"], ["30", "20 Mar", "05:19 AM", "6:44 PM"]
+        ];
+
+        const targetDate = new Date("Feb 18, 2026 18:28:00").getTime();
+        const audio = document.getElementById("duaAudio");
+
+        const timer = setInterval(() => {
+            const now = new Date().getTime();
+            const diff = targetDate - now;
+            if (diff <= 0) {
+                clearInterval(timer);
+                ["d", "h", "m", "s"].forEach(id => document.getElementById(id).innerText = "00");
+                showCalendar();
+            } else {
+                document.getElementById('d').innerText = String(Math.floor(diff / 86400000)).padStart(2, '0');
+                document.getElementById('h').innerText = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, '0');
+                document.getElementById('m').innerText = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+                document.getElementById('s').innerText = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+            }
+        }, 1000);
+
+        function showCalendar() {
+            audio.play().catch(() => { });
+            document.getElementById('countdown-ui').style.display = 'none';
+            document.getElementById('calendar-section').style.display = 'block';
+            document.getElementById('calendar-buttons').style.display = 'block';
+
+            const body = document.getElementById('calendar-body');
+            body.innerHTML = officialData.map(row => `
+                <tr>
+                    <td>${row[0]}</td>
+                    <td>${row[1]}</td>
+                    <td class="highlight">${row[2]}</td>
+                    <td class="highlight">${row[3]}</td>
+                </tr>
+            `).join('');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function downloadPDF() {
+            const element = document.getElementById('calendar-section');
+            const header = document.getElementById('pdf-header');
+            header.style.display = 'block';
+            const opt = {
+                margin: 0.2,
+                filename: 'Karachi_Ramzan_Calendar_2026.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save().then(() => {
+                header.style.display = 'none';
+            });
+        }
+
+        const canv = document.getElementById('fireworksCanvas');
+        const ctx = canv.getContext('2d');
+        let parts = [];
+        function res() { canv.width = window.innerWidth; canv.height = window.innerHeight; }
+        window.addEventListener('resize', res); res();
+
+        class P {
+            constructor(x, y, c) {
+                this.x = x; this.y = y; this.c = c;
+                this.v = { x: (Math.random() - 0.5) * 6, y: (Math.random() - 0.5) * 6 };
+                this.a = 1;
+            }
+            u() { this.x += this.v.x; this.y += this.v.y; this.a -= 0.015; }
+            d() { ctx.globalAlpha = this.a; ctx.fillStyle = this.c; ctx.beginPath(); ctx.arc(this.x, this.y, 2, 0, Math.PI * 2); ctx.fill(); }
+        }
+
+        function anim() {
+            ctx.fillStyle = 'rgba(2, 6, 23, 0.2)';
+            ctx.fillRect(0, 0, canv.width, canv.height);
+            if (Math.random() < 0.05) {
+                let x = Math.random() * canv.width, y = Math.random() * canv.height * 0.5, col = `hsl(${Math.random() * 360},70%,60%)`;
+                for (let i = 0; i < 20; i++) parts.push(new P(x, y, col));
+            }
+            parts = parts.filter(p => p.a > 0);
+            parts.forEach(p => { p.u(); p.d(); });
+            requestAnimationFrame(anim);
+        }
+        anim();
+    </script>
+</body>
+
+</html>
